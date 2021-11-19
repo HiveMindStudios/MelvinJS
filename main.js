@@ -4,7 +4,9 @@
 // https://opensource.org/licenses/MIT
 const fs = require("fs");
 const discord = require("discord.js");
-const {Client, Intents} = require("discord.js");
+const {Client, Intents, MessageEmbed} = require("discord.js");
+const { env } = require("process");
+const axios = require("axios").default;
 require("dotenv").config()
 const client = new Client({intents:[Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MEMBERS,
@@ -22,8 +24,7 @@ const client = new Client({intents:[Intents.FLAGS.GUILDS,
     Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
     Intents.FLAGS.DIRECT_MESSAGE_TYPING]
 });
-
-
+const prefix = process.env.PREFIX
 
 
 client.once('ready', () => {
@@ -34,15 +35,180 @@ client.once('ready', () => {
 
 client.on("message", async message =>{
     if(message.author.bot) return;
-    if(!message.content.startsWith("$")) return;
-    if(message.content.startsWith("$ping")){
+    if(!message.content.startsWith(prefix)) return;
+    const args = message.content.trim().split(/ +/g);
+    const cmd = args[0].slice(prefix.length).toLowerCase()
+    if(cmd === "ping"){
         ping(message, message.author)
+    }
+    else if(cmd === "qr"){
+        qr(message, args)
+    }
+    else if(cmd === "roll"){
+        roll(message, args)
+    }
+    else if(cmd === "metar"){
+        metar(message, args)
     }
     else{
         return message.channel.send(`Select correct command ${message.author}!`)
     }
 })
-async function ping(ctx, author){
-    return ctx.channel.send(`Pong ${author}`)
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
-client.login();
+async function ping(ctx, author){
+    return ctx.channel.send(`Pong ${author}!`)
+}
+async function qr(ctx, data){
+    if(typeof(data[1]) !== "string") return ctx.channel.send(`${ctx.author} Please provide data to create qr from!`)
+    else{
+        const qrCode = new MessageEmbed()
+        .setColor("#"+Math.floor(Math.random()*16777215).toString(16))
+        .setTitle("Here's your QR code!")
+        .setURL(`http://api.qrserver.com/v1/create-qr-code/?data=${data[1]}&size=1000x1000&ecc=Q&margin=8`)
+        .setTimestamp(Date.now)
+        .setImage(`http://api.qrserver.com/v1/create-qr-code/?data=${data[1]}&size=256x256&ecc=Q&margin=8`)
+        .setFooter("Melvin","https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
+        return ctx.channel.send({embeds:[qrCode]})
+    }
+}
+
+async function roll(ctx, data) {
+    const rolls = [...data[1].matchAll(/(\+|-|\/|\*)?([\d]*)d([\d]*)(kh|kl|r)?([\d])*/g)]
+    let modifiers = [...data[1].matchAll(/(\+|-)+([\d]*)(?!d)/g)]
+    let toCalc = []
+    let modSum = 0
+    if(modifiers[1] === "" || modifiers[1] === undefined){
+        modifiers[1]="+"
+    } 
+    if(modifiers[2] === "" || modifiers[2] === undefined){
+        modifiers[2]=0
+    }
+    toCalc.push([modifiers[1],modifiers[2],"",""])
+    console.log(`1: ${modifiers[1]}, 2: ${modifiers[2]}`)
+    modSum += parseInt(modifiers[1].toString()+modifiers[2].toString())
+    
+    for(let i=0;i<rolls.length;i++){
+        rolls[i][0] === ""?rolls[i][0] = "+":rolls[i][0]
+        rolls[i][1] === ""?rolls[i][1] = 1:rolls[i][1]
+    }
+    //! Rolling logic
+    try{
+        console.log(rolls)
+        for(k=0;k<rolls.length;k++){
+            if(rolls[k][3] !== ""){
+                //! Keep highest (drop lowest)
+                if(rolls[k][4].toLowerCase() === "kh"){
+                    let rolledDice = []
+                    let droppedDice = []
+                    for(let i = 0; i<rolls[k][2];i++){
+                        rolledDice.push(randomIntFromInterval(1, rolls[k][3]))
+                    }
+                    for(let i = 0; i<(rolledDice.length-rolls[k][5]);i++){
+                        droppedDice.push(...rolledDice.splice(rolledDice.indexOf(Math.min(rolledDice)),1))
+                    }
+                    toCalc.push([rolledDice[k][1], rolledDice.reduce((prev, curr)=>prev+curr), rolledDice, droppedDice])
+                }
+                //! Keep lowest (drop highest)
+                else if(rolls[k][4].toLowerCase() === "kl"){
+                    let rolledDice = []
+                    let droppedDice = []
+                    for(let i = 0; i<rolls[k][2];i++){
+                        rolledDice.push(randomIntFromInterval(1, rolls[k][3]))
+                    }
+                    for(let i = 0; i<(rolledDice.length-rolls[k][5]);i++){
+                        droppedDice.push(...rolledDice.splice(rolledDice.indexOf(Math.max(rolledDice)),1))
+                    }
+                    toCalc.push([rolledDice[k][1], rolledDice.reduce((prev, curr)=>prev+curr), rolledDice, droppedDice])
+                }
+                //! Minimum roll
+                else if(rolls[k][4].toLowerCase() === "r"){
+                    let rolledDice = [];
+                    for(let i = 0; i<rolls[k][2];i++){
+                        rolledDice.push(randomIntFromInterval(rolls[k][5], rolls[k][2]))
+                    }
+                    toCalc.push([rolls[k][1], rolledDice.reduce((prev, curr)=>prev+curr),"",""])
+                }
+                else{
+                    throw "The fuck happened this is unreachable code?"
+                }
+            }
+            else{
+                let rolledDice = []
+                for(let i = 0; i<rolls[2];i++){
+                    rolledDice.push(randomIntFromInterval(1, rolls[k][2]))
+                }
+                toCalc.push(rolls[k][1],rolledDice.reduce((prev, curr)=>prev+curr), rolledDice, "")
+            }
+            //! Calculations begin
+            let message = `Rolling: ${data[1]}`
+            let mess = ""
+            let result = ""
+            for(calculations in toCalc){
+                if (calculations[0] === "") calculations[0] = "+"
+                result += calculations[0].toString() + calculations[1].toString()
+                if(calculations[2] !== ""){
+                    mess+="{"
+                    for(let i = 0;i < calculations[2];i++){
+                        mess+= `(${calculations[2][i]}) + `
+                    }
+                    for(let i = 0;i < calculations[3];i++){
+                        mess+= `(~~${calculations[3][i]}~~) + `
+                    }
+                    mess+="} + "
+                }
+            }
+            mess.replace(/\) \+ \}/,")}")
+            return ctx.channel.send(`${mess+modSum}: **${eval(result)}**`)
+        }    
+    }
+    catch(e){
+        return ctx.channel.send(e)
+    }
+}
+
+async function metar(ctx, args) {
+    var ICAO = args.join(" ").toUpperCase().match(/[A-Z]{4}(?<=$)/);
+    var Verbosity = args.join(" ").toUpperCase().match(/-V/);
+    var Units = args.join(" ").toUpperCase().match(/M(?=$)|FT/);
+    console.log(ICAO)
+    if (ICAO == null) ICAO = "KJFK";
+    if (Verbosity == null) Verbosity = "";
+    if (Units == null) Units = "M";
+
+    console.log(`${ICAO} / ${Verbosity} / ${Units}`);
+    
+    return 0;
+    const url = `https://avwx.rest/api/metar/${ICAO.toUpperCase()}?options=info,summary&airport=true&reporting=true&format=json&onfail=cache`;
+    axios.get(url, {
+      headers: {
+        'Authorization': process.env.METAR_TOKEN
+      }
+    }).then(res => {
+      const weather = new MessageEmbed()
+        .setColor("#"+Math.floor(Math.random()*16777215).toString(16))
+        .setTitle(`Weather Info For: ${ICAO.toUpperCase()}`)
+        .setTimestamp(Date.now)
+        .addField("Airport Name:", res.data.info.name, false)
+        .addField("Current Weather:", res.data.sanitized, false)
+        if (Verbosity == "-v") {
+        weather.addField("City:", res.data.info.city, false)
+          .addField("State:", res.data.info.state, false)
+          .addField("Country:", res.data.info.country, false)
+          .addField("Latitude:", res.data.info.latitude + "°", false)
+          .addField("Longitude:", res.data.info.longitude + "°", false)
+          // if (Units == "M") {
+          //   weather.addField("Elevation:", res.data.info.elevation_m, false)
+          // }
+          // else {
+          //   weather.addField("Elevation:", res.data.info.elevation_ft, false)
+          // }
+        }
+        weather.setFooter("Melvin","https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
+        return ctx.channel.send({embeds:[weather]})
+    }).catch(err => {
+      console.error(err);
+    });
+}
+client.login(process.env.CLIENT_TOKEN);
