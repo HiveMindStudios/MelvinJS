@@ -32,6 +32,15 @@ client.once('ready', () => {
   console.log(`Logged in as: ${client.user.username} - ${client.user.id}`);
   console.log(`Version: ${discord.version}`);
   console.log(`Successfully logged in and booted!`);
+  
+  client.user.setStatus('online');
+  client.user.setPresence({
+    game: {
+      name: '$help for commands!',
+      type: 'Streaming',
+      url: 'https://github.com/VectorKappa/Melvin'
+    }
+  });
 });
 
 client.on("message", async message => {
@@ -53,6 +62,12 @@ client.on("message", async message => {
   }
   else if (cmd === "taf") {
     taf(message, args)
+  }
+  else if (cmd === "dice") {
+    dice(message, args)
+  }
+  else if (cmd === "ip") {
+    ip(message, args)
   }
   else {
     return message.channel.send(`Select correct command ${message.author}!`)
@@ -76,6 +91,34 @@ function generateError(ctx, message) {
 async function ping(ctx, author) {
   return ctx.channel.send(`Pong ${author}!`)
 }
+
+//* 
+
+
+//* Network Tools
+
+async function ip(ctx, ip) {
+  const url_ip = `https://ipinfo.io/${ip[1]}/json`;
+  axios.get(url_ip).then(res => {
+    const ipInfo = new MessageEmbed()
+      .setColor("#" + Math.floor(Math.random() * 16777215).toString(16))
+      .setTitle("IP Address Info")
+      .setTimestamp(Date.now)
+      .addField("Address:", res.data.ip, false)
+      .addField("Hostname:", res.data.hostname, false)
+      .addField("Location:", `${res.data.city} ${res.data.region} ${res.data.country} (${res.data.loc})`, false)
+      .addField("Timezone:", res.data.timezone, false)
+      .addField("Organisation / ISP:", res.data.org, false)
+      .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
+
+    return ctx.channel.send({ embeds: [ipInfo] });
+  }).catch(err => {
+    generateError(ctx, `${ip[1]} is not a valid IP Address`);
+  });
+}
+
+//* Utils 
+
 async function qr(ctx, data) {
   if (typeof (data[1]) !== "string") return ctx.channel.send(`${ctx.author} Please provide data to create qr from!`)
   else {
@@ -88,6 +131,12 @@ async function qr(ctx, data) {
       .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
     return ctx.channel.send({ embeds: [qrCode] })
   }
+}
+
+async function dice(ctx) {
+  var int = Math.floor(Math.random() * (6 - 1) + 1);
+  console.log(int);
+  ctx.channel.send(int.toString());
 }
 
 async function roll(ctx, data) {
