@@ -144,19 +144,12 @@ async function roll(ctx, data) {
   let modifiers = [...data[1].matchAll(/(\+|-)+([\d]*)(?!d)/g)]
   let toCalc = []
   let modSum = 0
-  if (modifiers[1] === "" || modifiers[1] === undefined) {
-    modifiers[1] = "+"
+  for(let i = 0; i < modifiers.length; i++){
+    modSum += modifiers[i][0]
   }
-  if (modifiers[2] === "" || modifiers[2] === undefined) {
-    modifiers[2] = 0
-  }
-  toCalc.push([modifiers[1], modifiers[2], "", ""])
-  console.log(`1: ${modifiers[1]}, 2: ${modifiers[2]}`)
-  modSum += parseInt(modifiers[1].toString() + modifiers[2].toString())
-
+  toCalc.push(["",modSum,"",""])
   for (let i = 0; i < rolls.length; i++) {
-    rolls[i][0] === "" ? rolls[i][0] = "+" : rolls[i][0]
-    rolls[i][1] === "" ? rolls[i][1] = 1 : rolls[i][1]
+    rolls[i][1] === undefined ? rolls[i][1] = '+' : rolls[i][1]
   }
   //! Rolling logic
   try {
@@ -173,7 +166,7 @@ async function roll(ctx, data) {
           for (let i = 0; i < (rolledDice.length - rolls[k][5]); i++) {
             droppedDice.push(...rolledDice.splice(rolledDice.indexOf(Math.min(rolledDice)), 1))
           }
-          toCalc.push([rolledDice[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, droppedDice])
+          toCalc.push([rolls[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, droppedDice])
         }
         //! Keep lowest (drop highest)
         else if (rolls[k][4].toLowerCase() === "kl") {
@@ -185,7 +178,7 @@ async function roll(ctx, data) {
           for (let i = 0; i < (rolledDice.length - rolls[k][5]); i++) {
             droppedDice.push(...rolledDice.splice(rolledDice.indexOf(Math.max(rolledDice)), 1))
           }
-          toCalc.push([rolledDice[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, droppedDice])
+          toCalc.push([rolls[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, droppedDice])
         }
         //! Minimum roll
         else if (rolls[k][4].toLowerCase() === "r") {
@@ -201,25 +194,25 @@ async function roll(ctx, data) {
       }
       else {
         let rolledDice = []
-        for (let i = 0; i < rolls[2]; i++) {
-          rolledDice.push(randomIntFromInterval(1, rolls[k][2]))
+        for (let i = 0; i < rolls[0][2]; i++) {
+          rolledDice.push(randomIntFromInterval(1, 20))
         }
-        toCalc.push(rolls[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, "")
+        toCalc.push(rolls[k][0], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, "")
       }
       //! Calculations begin
+      if(toCalc[0][1] == 0) toCalc.splice(0, 1)
       let message = `Rolling: ${data[1]}`
       let mess = ""
       let result = ""
       for (calculations in toCalc) {
-        if (calculations[0] === "") calculations[0] = "+"
-        result += calculations[0].toString() + calculations[1].toString()
-        if (calculations[2] !== "") {
+        result += toCalc[calculations][0].toString() + toCalc[calculations][1].toString()
+        if (toCalc[calculations][2] !== "") {
           mess += "{"
-          for (let i = 0; i < calculations[2]; i++) {
-            mess += `(${calculations[2][i]}) + `
+          for (let i = 0; i < toCalc[calculations][2].length; i++) {
+            mess += `(${toCalc[calculations][2][i]}) + `
           }
-          for (let i = 0; i < calculations[3]; i++) {
-            mess += `(~~${calculations[3][i]}~~) + `
+          for (let i = 0; i < toCalc[calculations][3].length; i++) {
+            mess += `(~~${toCalc[calculations][3][i]}~~)`
           }
           mess += "} + "
         }
