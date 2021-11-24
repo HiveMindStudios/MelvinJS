@@ -153,9 +153,9 @@ module.exports = {
         channelIDs.push(channelID)
         for (const [memberID, member] of channel.members) {
           member.voice.setChannel(channelIDs[randomIntFromInterval(0, channelIDs.length - 1)])
-          ctx.channel.send(`Get out of 'ere`);
         }
       }
+      ctx.channel.send(`Get out of 'ere`);
     }).catch((err) => {
       ctx.channel.send("Invalid Syntax. Please try again!")
     })
