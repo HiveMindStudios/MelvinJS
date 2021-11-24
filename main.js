@@ -43,7 +43,7 @@ client.once('ready', () => {
   });
 });
 
-client.on("message", async message => {
+client.on("messageCreate", async message => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
   const args = message.content.trim().split(/ +/g);
