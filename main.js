@@ -27,6 +27,7 @@ const prefix = process.env.PREFIX
 const { ip } = require("./modules/netTools");
 const { qr, dice, roll, metar, taf } = require("./modules/utils");
 const { op, bless, askgod, verse, kill, infect, yn, dox, give, kit, uuid, tp, helloworld, randomtp, randomtpall, yeet, randompaintp } = require("./modules/fun");
+const { ping, posix, uptime } = require("./modules/meta");
 
 client.once('ready', () => {
   console.log(`Logged in as: ${client.user.username} - ${client.user.id}`);
@@ -49,7 +50,13 @@ client.on("messageCreate", async message => {
   const args = message.content.trim().split(/ +/g);
   const cmd = args[0].slice(prefix.length).toLowerCase()
   if (cmd === "ping") {
-    ping(message, message.author)
+    ping(message, args)
+  }
+  else if (cmd === "posix") {
+    posix(message, args)
+  }
+  else if (cmd === "uptime") {
+    uptime(message, args)
   }
   else if (cmd === "qr") {
     qr(message, args)
@@ -78,56 +85,51 @@ client.on("messageCreate", async message => {
   else if (cmd === "askgod") {
     askgod(message, args)
   }
-  else if (cmd == "verse") {
+  else if (cmd === "verse") {
     verse(message, args)
   }
-  else if (cmd == "kill") {
+  else if (cmd === "kill") {
     kill(message, args)
   }
-  else if (cmd == "infect") {
+  else if (cmd === "infect") {
     infect(message, args)
   }
-  else if (cmd == "yn") {
+  else if (cmd === "yn") {
     yn(message, args)
   }
-  else if (cmd == "dox") {
+  else if (cmd === "dox") {
     dox(message, args)
   }
-  else if (cmd == "give") {
+  else if (cmd === "give") {
     give(message, args)
   }
-  else if (cmd == "kit") {
+  else if (cmd === "kit") {
     kit(message, args)
   }
-  else if (cmd == "uuid") {
+  else if (cmd === "uuid") {
     uuid(message, args)
   }
-  else if (cmd == "tp") {
+  else if (cmd === "tp") {
     tp(message, args)
   }
-  else if (cmd == "helloworld") {
+  else if (cmd === "helloworld") {
     helloworld(message, args)
   }
-  else if (cmd == "randomtp") {
+  else if (cmd === "randomtp") {
     randomtp(message, args)
   }
-  else if (cmd == "randomtpall") {
+  else if (cmd === "randomtpall") {
     randomtpall(message, args)
   }
-  else if (cmd == "yeet") {
+  else if (cmd === "yeet") {
     yeet(message, args)
   }
-  else if (cmd == "randompaintp") {
+  else if (cmd === "randompaintp") {
     randompaintp(message, args)
   }
   else {
     return message.channel.send(`Select correct command ${message.author}!`)
   }
 })
-
-
-async function ping(ctx, author) {
-  return ctx.channel.send(`Pong ${author}!`)
-}
 
 client.login(process.env.CLIENT_TOKEN);

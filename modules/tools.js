@@ -18,5 +18,19 @@ module.exports = {
 
   sleep: function (ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
+  format: function (seconds) {
+    var days = Math.floor(seconds / 60 / 60 / 24 )
+    var hours = Math.floor(seconds / 60 / 60) % 24
+    var minutes = Math.floor(seconds / 60) % 60
+    var seconds = Math.floor(seconds % 60)
+
+    days = (days > 0) ? `${hours}d ` : ''
+    hours = (hours > 0) ? `${hours}h ` : ''
+    minutes = (minutes > 0) ? `${minutes}m ` : ''
+    seconds = (seconds > 0) ? `${seconds}s` : ''
+
+    return days + hours + minutes + seconds
   }
 }
