@@ -21,7 +21,7 @@ module.exports = {
   },
 
   format: function (seconds) {
-    var days = Math.floor(seconds / 60 / 60 / 24 )
+    var days = Math.floor(seconds / 60 / 60 / 24)
     var hours = Math.floor(seconds / 60 / 60) % 24
     var minutes = Math.floor(seconds / 60) % 60
     var seconds = Math.floor(seconds % 60)
@@ -32,5 +32,25 @@ module.exports = {
     seconds = (seconds > 0) ? `${seconds}s` : ''
 
     return days + hours + minutes + seconds
+  },
+
+  generateEmbed: function (message, title, description, url, duration, image) {
+    var desc;
+    if (typeof duration === "undefined") {
+      desc = `[${description}](${url})`
+    }
+    else {
+      desc = `[${description}](${url}) \n \`[0:00 / ${duration}]\``
+    }
+
+    var embed = new MessageEmbed()
+      .setColor("#" + Math.floor(Math.random() * 16777215).toString(16))
+      .setTitle(title)
+      .setThumbnail(image)
+      .setDescription(desc)
+      .setTimestamp(Date.now)
+      .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
+  
+    return message.channel.send({ embeds: [embed] })
   }
 }

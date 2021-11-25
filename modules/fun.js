@@ -110,9 +110,9 @@ module.exports = {
       channels = channels.filter(c => c.type === "GUILD_VOICE");
       channelIDs = []
       for (const [channelID, channel] of channels) {
-        channelIDs.push(channelID)
-        let random = randomIntFromInterval(0, channelIDs.length - 1)  
+        channelIDs.push(channelID) 
       }
+      let random = randomIntFromInterval(0, channelIDs.length - 1) 
       ctx.guild.members.fetch(ctx.mentions.members.first())
           .then((res) => {
             res.voice.setChannel(channelIDs[random])
