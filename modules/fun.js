@@ -1,17 +1,17 @@
 const { default: axios } = require("axios");
-const { randomIntFromInterval, generateError, sleep } = require("./tools");
+const { randomIntFromInterval, generateError } = require("./tools");
 
 module.exports = {
-  op: async function (ctx, user) {
-    ctx.channel.send(`${user[1]} was given Administrator rights`);
+  op: async function (message, args) {
+    message.channel.send(`${args[1]} was given Administrator rights`);
   },
 
-  bless: async function (ctx, user) {
-    ctx.channel.send(`${ctx.author} blessed ${user[1]}. What a good person.`);
+  bless: async function (message, args) {
+    message.channel.send(`${message.author} blessed ${args[1]}. What a good person.`);
   },
 
-  askgod: async function (ctx) {
-    ctx.channel.send([
+  askgod: async function (message, args) {
+    message.channel.send([
       "You probably don't want to know.",
       "Certainly, maybe?",
       "I can't predict it right now",
@@ -19,41 +19,41 @@ module.exports = {
     ][Math.floor(Math.random() * (3 - 0) + 0)]);
   },
 
-  verse: async function (ctx, args) {
+  verse: async function (message, args) {
     args.shift()
     var verse = args.join(" ");
     const url_bible = `https://bible-api.com/${verse}`;
     axios.get(url_bible).then(res => {
       if (res.data.text.length < 2000) {
-        ctx.channel.send(res.data.text)
+        message.channel.send(res.data.text)
       }
       else {
-        ctx.channel.send("Quote too long")
+        message.channel.send("Quote too long")
       }
     }).catch(err => {
-      ctx.channel.send("Not found")
+      message.channel.send("Not found")
     })
   },
 
-  kill: async function (ctx, user) {
-    ctx.channel.send(`${ctx.author} killed ${user[1]}`)
+  kill: async function (message, args) {
+    message.channel.send(`${message.author} killed ${args[1]}`)
   },
 
-  infect: async function (ctx, user) {
-    ctx.channel.send(`${ctx.author} infected ${user[1]} with Covid-19`)
+  infect: async function (message, args) {
+    message.channel.send(`${message.author} infected ${args[1]} with Covid-19`)
   },
 
-  yn: async function (ctx) {
-    ctx.channel.send(["Yes.", "No."][Math.round(Math.random())])
+  yn: async function (message, args) {
+    message.channel.send(["Yes.", "No."][Math.round(Math.random())])
   },
 
-  dox: async function (ctx, user) {
-    if (typeof user[1] === "undefined") user[1] = ctx.author;
-    ctx.channel.send(`${user[1]}'s IP address is ${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}`)
+  dox: async function (message, args) {
+    if (typeof args[1] === "undefined") args[1] = message.author;
+    message.channel.send(`${args[1]}'s IP address is ${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}`)
   },
 
-  give: async function (ctx, args) {
-    if (typeof args[1] === "undefined") args[1] = ctx.author;
+  give: async function (message, args) {
+    if (typeof args[1] === "undefined") args[1] = message.author;
     let user = args[1];
     args.shift();
     args.shift();
@@ -61,76 +61,78 @@ module.exports = {
     let amount = args.join(" ").match(/\d/g).join("");
     let item = args.join(" ").match(/\w\D{1,}/).join("");
 
-    ctx.channel.send(`${ctx.author} gave ${amount} ${item} to ${user}`)
+    message.channel.send(`${message.author} gave ${amount} ${item} to ${user}`)
   },
 
-  kit: async function (ctx, args) {
+  kit: async function (message, args) {
     args.shift();
     let type = args.join(" ");
-    ctx.channel.send(`${ctx.author} recievied a ${type} kit!`)
+    message.channel.send(`${message.author} recievied a ${type} kit!`)
   },
 
-  uuid: async function (ctx, user) {
-    if (typeof user[1] === "undefined") {
-      ctx.channel.send(`${ctx.author}'s uuid is ${ctx.author.id}`)
+  uuid: async function (message, args) {
+    if (typeof args[1] === "undefined") {
+      message.channel.send(`${message.author}'s uuid is ${message.author.id}`)
     }
     else {
-      let uuid = user[1].replace('<@!', '').replace('>', '');
-      ctx.channel.send(`${user[1]}'s uuid is ${uuid}`)
+      let uuid = args[1].replace('<@!', '').replace('>', '');
+      message.channel.send(`${args[1]}'s uuid is ${uuid}`)
     }
   },
 
-  helloworld: async function (ctx) {
+  helloworld: async function (message, args) {
     let secret = Math.floor(Math.random() * (100 - 1) + 1);
     if (secret === 69) {
-      ctx.channel.send("Shit Happens.")
+      message.channel.send("Shit Happens.")
     }
     else if (secret === 37) {
-      ctx.channel.send("H3110 W0r1D!")
+      message.channel.send("H3110 W0r1D!")
     }
     else if (secret === 88) {
-      ctx.channel.send("Hewwo Wowwd!")
+      message.channel.send("Hewwo Wowwd!")
     }
     else {
-      ctx.channel.send("Hello World!")
+      message.channel.send("Hello World!")
     }
   },
 
-  tp: async function (ctx, args) {
-    ctx.guild.members.fetch(ctx.mentions.members.first()).then((res) => {
+  tp: async function (message, args) {
+    message.guild.members.fetch(message.mentions.members.first()).then((res) => {
       res.voice.setChannel(args[2])
-      ctx.channel.send(`Teleported ${args[1]}`)
+      message.channel.send(`Teleported ${args[1]}`)
     }).catch(err => {
-      ctx.channel.send("Invalid Syntax. Please try again!")
+      console.log(err)
+      generateError("Invalid Syntax. Please try again!")
     })
   },
 
-  randomtp: async function (ctx, user) {
-    ctx.guild.channels.fetch().then((channels) => {
+  randomtp: async function (message, args) {
+    message.guild.channels.fetch().then((channels) => {
       channels = channels.filter(c => c.type === "GUILD_VOICE");
       channelIDs = []
       for (const [channelID, channel] of channels) {
-        channelIDs.push(channelID) 
+        channelIDs.push(channelID)
       }
-      let random = randomIntFromInterval(0, channelIDs.length - 1) 
-      ctx.guild.members.fetch(ctx.mentions.members.first())
-          .then((res) => {
-            res.voice.setChannel(channelIDs[random])
-            ctx.channel.send(`Abracadabra ${user[1]}`)
-          }).catch(err => {
-            ctx.channel.send("Invalid Syntax. Please try again!")
-          })
+      let random = randomIntFromInterval(0, channelIDs.length - 1)
+      message.guild.members.fetch(message.mentions.members.first())
+        .then((res) => {
+          res.voice.setChannel(channelIDs[random])
+          message.channel.send(`Abracadabra ${args[1]}`)
+        }).catch(err => {
+          console.log(err)
+          generateError("Invalid Syntax. Please try again!")
+        })
     })
   },
-  
-  randompaintp: async function (ctx, user) {
+
+  randompaintp: async function (message, args) {
     // ctx.guild.channels.fetch().then((channels) => {
     //   channels = channels.filter(c => c.type === "GUILD_VOICE");
     //   channelIDs = []
     //   for (const [channelID, channel] of channels) {
     //     channelIDs.push(channelID)
     //     let random = randomIntFromInterval(0, channelIDs.length - 1)  
-        
+
     //     ctx.guild.members.fetch(ctx.mentions.members.first())
     //       .then((res) => {
     //         res.voice.setChannel(channelIDs[random])
@@ -142,11 +144,11 @@ module.exports = {
     //       sleep(3000);
     //   }
     // })
-    ctx.channel.send("Coming Soon!");
+    message.channel.send("Coming Soon!");
   },
 
-  randomtpall: async function (ctx) {
-    ctx.guild.channels.fetch().then((channels) => {
+  randomtpall: async function (message, args) {
+    message.guild.channels.fetch().then((channels) => {
       channels = channels.filter(c => c.type === "GUILD_VOICE");
       channelIDs = []
       for (const [channelID, channel] of channels) {
@@ -155,28 +157,30 @@ module.exports = {
           member.voice.setChannel(channelIDs[randomIntFromInterval(0, channelIDs.length - 1)])
         }
       }
-      ctx.channel.send(`Get out of 'ere`);
+      message.channel.send(`Get out of 'ere`);
     }).catch((err) => {
-      ctx.channel.send("Invalid Syntax. Please try again!")
+      generateError("Invalid Syntax. Please try again!")
     })
   },
 
-  yeet: async function (ctx, user) {
-    if (typeof user[1] === "undefined") {
-      ctx.guild.members.fetch(ctx.author.id).then((res) => {
+  yeet: async function (message, args) {
+    if (typeof args[1] === "undefined") {
+      message.guild.members.fetch(message.author.id).then((res) => {
         res.voice.setChannel(null)
-        ctx.channel.send(`Yeeted ${ctx.author}`)
+        message.channel.send(`Yeeted ${message.author}`)
       }).catch(err => {
-        ctx.channel.send("Invalid Syntax. Please try again!")
+        console.log(err)
+        generateError("Invalid Syntax. Please try again!")
       })
     }
     else {
-      ctx.guild.members.fetch(ctx.mentions.members.first())
+      message.guild.members.fetch(message.mentions.members.first())
         .then((res) => {
           res.voice.setChannel(null)
-          ctx.channel.send(`Yeeted ${user[1]}`)
+          message.channel.send(`Yeeted ${args[1]}`)
         }).catch(err => {
-          ctx.channel.send("Invalid Syntax. Please try again!")
+          console.log(err);
+          generateError("Invalid Syntax. Please try again!")
         })
     }
   }

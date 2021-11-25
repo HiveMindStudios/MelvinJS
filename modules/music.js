@@ -21,7 +21,9 @@ module.exports = {
         }
       })
     }
-    generateEmbed(message, "Now Playing", `${queue.songs[0].author} - ${queue.songs[0].name}`, queue.songs[0].url, queue.songs[0].duration, queue.songs[0].thumbnail)
+    
+    let track = queue.songs[queue.songs.length - 1];
+    generateEmbed(message, "Queued", track.name, track.url, track.duration, track.thumbnail)
   },
 
   playlist: async function (guildQueue, player, message, args) {
@@ -32,7 +34,9 @@ module.exports = {
       if (!guildQueue)
         queue.stop();
     });
-    generateEmbed(message, "Now Playing", `${queue.songs[0].author} - ${queue.songs[0].name}`, queue.songs[0].url, queue.songs[0].duration, queue.songs[0].thumbnail)
+    
+    let track = queue.songs[queue.songs.length - 1];
+    generateEmbed(message, "Queued", track.name, track.url, track.duration, track.thumbnail)
   },
 
   skip: async function (guildQueue, message, args) {

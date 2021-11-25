@@ -21,17 +21,21 @@ module.exports = {
   },
 
   format: function (seconds) {
-    var days = Math.floor(seconds / 60 / 60 / 24)
+    var years = Math.floor(seconds / 60 / 60 / 24 / 7 / 52)
+    var weeks = Math.floor(seconds / 60 / 60 / 24 / 7) % 52
+    var days = Math.floor(seconds / 60 / 60 / 24) % 7
     var hours = Math.floor(seconds / 60 / 60) % 24
     var minutes = Math.floor(seconds / 60) % 60
     var seconds = Math.floor(seconds % 60)
 
-    days = (days > 0) ? `${hours}d ` : ''
+    years = (years > 0) ? `${years}y ` : ''
+    weeks = (weeks > 0) ? `${weeks}w ` : ''
+    days = (days > 0) ? `${days}d ` : ''
     hours = (hours > 0) ? `${hours}h ` : ''
     minutes = (minutes > 0) ? `${minutes}m ` : ''
     seconds = (seconds > 0) ? `${seconds}s` : ''
 
-    return days + hours + minutes + seconds
+    return years + weeks + days + hours + minutes + seconds
   },
 
   generateEmbed: function (message, title, description, url, duration, image) {

@@ -1,28 +1,32 @@
 const axios = require("axios").default;
 const { randomIntFromInterval, generateError, sleep } = require("./tools.js");
-const { Client, Intents, MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
-  qr: async function (ctx, data) {
-    if (typeof (data[1]) !== "string") return ctx.channel.send(`${ctx.author} Please provide data to create qr from!`)
+  qr: async function (message, args) {
+    args.shift();
+    args = args.join(" ");
+    args = encodeURIComponent(args);
+    if (typeof args !== "string") return generateError(message, "Please provide data to create QR code!");
     else {
       const qrCode = new MessageEmbed()
         .setColor("#" + Math.floor(Math.random() * 16777215).toString(16))
         .setTitle("Here's your QR code!")
-        .setURL(`http://api.qrserver.com/v1/create-qr-code/?data=${data[1]}&size=1000x1000&ecc=Q&margin=8`)
+        .setURL(`http://api.qrserver.com/v1/create-qr-code/?data=${args}&size=1000x1000&ecc=Q&margin=8`)
         .setTimestamp(Date.now)
-        .setImage(`http://api.qrserver.com/v1/create-qr-code/?data=${data[1]}&size=256x256&ecc=Q&margin=8`)
+        .setImage(`http://api.qrserver.com/v1/create-qr-code/?data=${args}&size=256x256&ecc=Q&margin=8`)
         .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
-      return ctx.channel.send({ embeds: [qrCode] })
+      return message.channel.send({ embeds: [qrCode] })
     }
   },
 
-  dice: async function (ctx) {
+  dice: async function (message, args) {
     var int = Math.floor(Math.random() * (6 - 1) + 1);
-    ctx.channel.send(int.toString());
+    message.channel.send(int.toString());
   },
 
   roll: async function (ctx, data) {
+    if (typeof data[1] === 'undefined') data[1] = '2d20kl1+3';
     const rolls = [...data[1].matchAll(/(\+|-|\/|\*)?([\d]*)d([\d]*)(kh|kl|r)?([\d])*/g)]
     let modifiers = [...data[1].matchAll(/(\+|-)+([\d]*)(?!d)/g)]
     let toCalc = []
@@ -108,7 +112,7 @@ module.exports = {
     }
   },
 
-  metar: async function (ctx, args) {
+  metar: async function (message, args) {
     params = args.join(" ").slice(6).toUpperCase(); // get all params in a nice string
 
     // assign different args to vars
@@ -150,7 +154,7 @@ module.exports = {
         }
       }
       weather.setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
-      return ctx.channel.send({ embeds: [weather] });
+      return message.channel.send({ embeds: [weather] });
     }).catch(err => {
       // if response isn't empty show server's response
       if (Object.keys(err).length !== 0) {
@@ -162,7 +166,7 @@ module.exports = {
     });
   },
 
-  taf: function (ctx, args) {
+  taf: function (message, args) {
     params = args.join(" ").slice(4).toUpperCase(); // get all params in a nice string
 
     // assign different args to vars
@@ -186,7 +190,7 @@ module.exports = {
         .addField("Airport Name:", res.data.info.name, false)
         .addField("Forecast:", res.data.raw, false)
         .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
-      return ctx.channel.send({ embeds: [weather] });
+      return message.channel.send({ embeds: [weather] });
     }).catch(err => {
       // if response isn't empty show server's response
       if (Object.keys(err).length !== 0) {

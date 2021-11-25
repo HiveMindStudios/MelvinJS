@@ -36,7 +36,7 @@ client.player = player;
 
 const prefix = process.env.PREFIX
 
-const { ip } = require("./modules/netTools");
+const { ip } = require("./modules/network");
 const { qr, dice, roll, metar, taf } = require("./modules/utils");
 const { op, bless, askgod, verse, kill, infect, yn, dox, give, kit, uuid, tp, helloworld, randomtp, randomtpall, yeet, randompaintp } = require("./modules/fun");
 const { ping, posix, uptime } = require("./modules/meta");
