@@ -3,40 +3,50 @@ const { RepeatMode } = require('discord-music-player');
 
 module.exports = {
   play: async function (guildQueue, player, message, args) {
-    args.shift();
-    let queue = player.createQueue(message.guild.id);
-    await queue.join(message.member.voice.channel);
-    let song = null;
+    try {
+      args.shift();
+      let queue = player.createQueue(message.guild.id);
+      await queue.join(message.member.voice.channel);
+      let song = null;
 
-    if (/list/.test(args.join(" "))) {
-      song = await queue.playlist(args.join(' ')).catch(_ => {
-        if (!guildQueue)
-          queue.stop();
-      });
+      if (/list/.test(args.join(" "))) {
+        song = await queue.playlist(args.join(' ')).catch(_ => {
+          if (!guildQueue)
+            queue.stop();
+        });
+      }
+      else {
+        song = await queue.play(args.join(' ')).catch(_ => {
+          if (!guildQueue) {
+            queue.stop();
+          }
+        })
+      }
+
+      let track = queue.songs[queue.songs.length - 1];
+      generateEmbed(message, "Queued", track.name, track.url, track.duration, track.thumbnail)
+    } catch (err) {
+      console.log(err)
+      generateError(message, "Something went wrong. We're working on it.");
     }
-    else {
-      song = await queue.play(args.join(' ')).catch(_ => {
-        if (!guildQueue) {
-          queue.stop();
-        }
-      })
-    }
-    
-    let track = queue.songs[queue.songs.length - 1];
-    generateEmbed(message, "Queued", track.name, track.url, track.duration, track.thumbnail)
   },
 
   playlist: async function (guildQueue, player, message, args) {
-    args.shift();
-    let queue = player.createQueue(message.guild.id);
-    await queue.join(message.member.voice.channel);
-    let song = await queue.playlist(args.join(' ')).catch(_ => {
-      if (!guildQueue)
-        queue.stop();
-    });
-    
-    let track = queue.songs[queue.songs.length - 1];
-    generateEmbed(message, "Queued", track.name, track.url, track.duration, track.thumbnail)
+    try {
+      args.shift();
+      let queue = player.createQueue(message.guild.id);
+      await queue.join(message.member.voice.channel);
+      let song = await queue.playlist(args.join(' ')).catch(_ => {
+        if (!guildQueue)
+          queue.stop();
+      });
+
+      let track = queue.songs[queue.songs.length - 1];
+      generateEmbed(message, "Queued", track.name, track.url, track.duration, track.thumbnail)
+    } catch (err) {
+      console.log(err)
+      generateError(message, "Something went wrong. We're working on it.");
+    }
   },
 
   skip: async function (guildQueue, message, args) {
