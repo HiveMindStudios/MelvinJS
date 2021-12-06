@@ -36,11 +36,11 @@ client.player = player;
 
 const prefix = process.env.PREFIX
 
-const { ip } = require("./modules/network");
-const { qr, dice, roll, metar, taf } = require("./modules/utils");
-const { op, bless, askgod, verse, kill, infect, yn, dox, give, kit, uuid, tp, helloworld, randomtp, randomtpall, yeet, randompaintp } = require("./modules/fun");
-const { ping, posix, uptime } = require("./modules/meta");
-const { play, playlist, skip, stop, loop, volume, seek, queue, shuffle, pause, resume, remove, leave } = require("./modules/music");
+const network = require("./modules/network");
+const utils = require("./modules/utils");
+const fun = require("./modules/fun");
+const meta = require("./modules/meta");
+const music = require("./modules/music");
 
 client.player
   .on('channelEmpty', (queue) =>
@@ -100,121 +100,121 @@ client.on('messageCreate', async message => {
   let guildQueue = client.player.getQueue(message.guild.id);
 
   if (cmd === "ping") {
-    ping(message, args)
+    meta.ping(message, args)
   }
   else if (cmd === "posix") {
-    posix(message, args)
+    meta.posix(message, args)
   }
   else if (cmd === "uptime") {
-    uptime(message, args)
+    meta.uptime(message, args)
   }
   else if (cmd === "qr") {
-    qr(message, args)
+    utils.qr(message, args)
   }
   else if (cmd === "roll") {
-    roll(message, args)
+    utils.roll(message, args)
   }
   else if (cmd === "metar") {
-    metar(message, args)
+    utils.metar(message, args)
   }
   else if (cmd === "taf") {
-    taf(message, args)
+    utils.taf(message, args)
   }
   else if (cmd === "dice") {
-    dice(message, args)
+    utils.dice(message, args)
   }
   else if (cmd === "ip") {
-    ip(message, args)
+    network.ip(message, args)
   }
   else if (cmd === "op") {
-    op(message, args)
+    fun.op(message, args)
   }
   else if (cmd === "bless") {
-    bless(message, args)
+    fun.bless(message, args)
   }
   else if (cmd === "askgod") {
-    askgod(message, args)
+    fun.askgod(message, args)
   }
   else if (cmd === "verse") {
-    verse(message, args)
+    fun.verse(message, args)
   }
   else if (cmd === "kill") {
-    kill(message, args)
+    fun.kill(message, args)
   }
   else if (cmd === "infect") {
-    infect(message, args)
+    fun.infect(message, args)
   }
   else if (cmd === "yn") {
-    yn(message, args)
+    fun.yn(message, args)
   }
   else if (cmd === "dox") {
-    dox(message, args)
+    fun.dox(message, args)
   }
   else if (cmd === "give") {
-    give(message, args)
+    fun.give(message, args)
   }
   else if (cmd === "kit") {
-    kit(message, args)
+    fun.kit(message, args)
   }
   else if (cmd === "uuid") {
-    uuid(message, args)
+    fun.uuid(message, args)
   }
   else if (cmd === "tp") {
-    tp(message, args)
+    fun.tp(message, args)
   }
   else if (cmd === "helloworld") {
-    helloworld(message, args)
+    fun.helloworld(message, args)
   }
   else if (cmd === "randomtp") {
-    randomtp(message, args)
+    fun.randomtp(message, args)
   }
   else if (cmd === "randomtpall") {
-    randomtpall(message, args)
+    fun.randomtpall(message, args)
   }
   else if (cmd === "yeet") {
-    yeet(message, args)
+    fun.yeet(message, args)
   }
   else if (cmd === "randompaintp") {
-    randompaintp(message, args)
+    fun.randompaintp(message, args)
   }
   else if (cmd === "play" || cmd === "p") {
-    play(guildQueue, client.player, message, args)
+    music.play(guildQueue, client.player, message, args)
   }
   else if (cmd === "playlist") {
-    playlist(guildQueue, client.player, message, args)
+    music.playlist(guildQueue, client.player, message, args)
   }
   else if (cmd === 'skip') {
-    skip(guildQueue, message, args)
+    music.skip(guildQueue, message, args)
   }
   else if (cmd === 'stop') {
-    stop(guildQueue, message, args)
+    music.stop(guildQueue, message, args)
   }
   else if (cmd === 'loop') {
-    loop(guildQueue, message, args)
+    music.loop(guildQueue, message, args)
   }
   else if (cmd === 'volume' || cmd === 'vol') {
-    volume(guildQueue, message, args)
+    music.volume(guildQueue, message, args)
   }
   else if (cmd === 'seek') {
-    seek(guildQueue, message, args)
+    music.seek(guildQueue, message, args)
   }
   else if (cmd === 'queue') {
-    queue(guildQueue, message, args)
+    music.queue(guildQueue, message, args)
   }
   else if (cmd === 'shuffle') {
-    shuffle(guildQueue, message, args)
+    music.shuffle(guildQueue, message, args)
   }
   else if (cmd === 'pause') {
-    pause(guildQueue, message, args)
+    music.pause(guildQueue, message, args)
   }
   else if (cmd === 'resume') {
-    resume(guildQueue, message, args)
+    music.resume(guildQueue, message, args)
   }
   else if (cmd === 'remove') {
-    remove(guildQueue, message, args)
+    music.remove(guildQueue, message, args)
   }
   else if (cmd === 'leave') {
-    leave(guildQueue, message, args)
+    music.leave(guildQueue, message, args)
   }
   else {
     return message.channel.send(`Select correct command ${message.author}!`)
