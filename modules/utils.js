@@ -46,7 +46,7 @@ module.exports = {
     let droppedNumbers = []
     let result = rolledNumbers
     for(let i = 0;i < diceAmount ;i++){
-      rolledNumbers.push(Math.floor(Math.random()*diceSize+1))
+      rolledNumbers.push(Math.floor(randomIntFromInterval(1,diceSize)))
     }
     //! Actions
     //* Keep lower x
