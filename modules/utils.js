@@ -80,6 +80,7 @@ module.exports = {
     //! Messaging
     droppedNumbers = droppedNumbers.map(el=>`~~${el}~~`)
     ctx.channel.send(`Rolling ${roll[0]+modifiers.map(mod=>mod[0]).join("")}: [${rolledNumbers.concat(droppedNumbers).join(", ")}]: **${result}**`)
+    //* End of roll command
   },
 
   metar: async function (message, args) {
