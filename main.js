@@ -98,130 +98,60 @@ client.on('messageCreate', async message => {
   const args = message.content.trim().split(/ +/g);
   const cmd = args[0].slice(prefix.length).toLowerCase()
   let guildQueue = client.player.getQueue(message.guild.id);
-
-  if (cmd === "help") {
-    meta.help(message, args)
-  }
-  else if (cmd === "ping") {
-    meta.ping(message, args)
-  }
-  else if (cmd === "posix") {
-    meta.posix(message, args)
-  }
-  else if (cmd === "uptime") {
-    meta.uptime(message, args)
-  }
-  else if (cmd === "qr") {
-    utils.qr(message, args)
-  }
-  else if (cmd === "roll") {
-    utils.roll(message, args)
-  }
-  else if (cmd === "metar") {
-    utils.metar(message, args)
-  }
-  else if (cmd === "taf") {
-    utils.taf(message, args)
-  }
-  else if (cmd === "dice") {
-    utils.dice(message, args)
-  }
-  else if (cmd === "ip") {
-    network.ip(message, args)
-  }
-  else if (cmd === "op") {
-    fun.op(message, args)
-  }
-  else if (cmd === "bless") {
-    fun.bless(message, args)
-  }
-  else if (cmd === "askgod") {
-    fun.askgod(message, args)
-  }
-  else if (cmd === "verse") {
-    fun.verse(message, args)
-  }
-  else if (cmd === "kill") {
-    fun.kill(message, args)
-  }
-  else if (cmd === "infect") {
-    fun.infect(message, args)
-  }
-  else if (cmd === "yn") {
-    fun.yn(message, args)
-  }
-  else if (cmd === "dox") {
-    fun.dox(message, args)
-  }
-  else if (cmd === "give") {
-    fun.give(message, args)
-  }
-  else if (cmd === "kit") {
-    fun.kit(message, args)
-  }
-  else if (cmd === "uuid") {
-    fun.uuid(message, args)
-  }
-  else if (cmd === "tp") {
-    fun.tp(message, args)
-  }
-  else if (cmd === "helloworld") {
-    fun.helloworld(message, args)
-  }
-  else if (cmd === "randomtp") {
-    fun.randomtp(message, args)
-  }
-  else if (cmd === "randomtpall") {
-    fun.randomtpall(message, args)
-  }
-  else if (cmd === "yeet") {
-    fun.yeet(message, args)
-  }
-  else if (cmd === "randompaintp") {
-    fun.randompaintp(message, args)
-  }
-  else if (cmd === "play" || cmd === "p") {
-    music.play(guildQueue, client.player, message, args)
-  }
-  else if (cmd === "playlist") {
-    music.playlist(guildQueue, client.player, message, args)
-  }
-  else if (cmd === 'skip') {
-    music.skip(guildQueue, message, args)
-  }
-  else if (cmd === 'stop') {
-    music.stop(guildQueue, message, args)
-  }
-  else if (cmd === 'loop') {
-    music.loop(guildQueue, message, args)
-  }
-  else if (cmd === 'volume' || cmd === 'vol') {
-    music.volume(guildQueue, message, args)
-  }
-  else if (cmd === 'seek') {
-    music.seek(guildQueue, message, args)
-  }
-  else if (cmd === 'queue') {
-    music.queue(guildQueue, message, args)
-  }
-  else if (cmd === 'shuffle') {
-    music.shuffle(guildQueue, message, args)
-  }
-  else if (cmd === 'pause') {
-    music.pause(guildQueue, message, args)
-  }
-  else if (cmd === 'resume') {
-    music.resume(guildQueue, message, args)
-  }
-  else if (cmd === 'remove') {
-    music.remove(guildQueue, message, args)
-  }
-  else if (cmd === 'leave') {
-    music.leave(guildQueue, message, args)
-  }
-  else {
-    return message.channel.send(`Select correct command ${message.author}!`)
+  switch(cmd){
+    //* Meta
+    case "help": meta.help(message, args);break
+    case "ping": meta.ping(message, args);break
+    case "posix": meta.posix(message, args);break
+    case "uptime": meta.uptime(message, args);break
+    //* Utils
+    case "qr": utils.qr(message, args);break
+    case "roll": utils.roll(message, args);break
+    case "metar": utils.metar(message, args);break
+    case "taf": utils.taf(message, args);break
+    case "dice": utils.dice(message, args);break
+    //* Network
+    case "ip": network.ip(message, args);break
+    //* Fun
+    case "op": fun.op(message, args);break
+    case "bless": fun.bless(message, args);break
+    case "askgod": fun.askgod(message, args);break
+    case "verse": fun.verse(message, args);break
+    case "kill": fun.kill(message, args);break
+    case "infect": fun.infect(message, args);break
+    case "yn": fun.yn(message, args);break
+    case "dox": fun.dox(message, args);break
+    case "give": fun.give(message, args);break
+    case "kit": fun.kit(message, args);break
+    case "uuid": fun.uuid(message, args);break
+    case "tp": fun.tp(message, args);break
+    case "helloworld": fun.helloworld(message, args);break
+    case "randomtp": fun.randomtp(message, args);break
+    case "randomtpall": fun.randomtpall(message, args);break
+    case "yeet": fun.yeet(message, args);break
+    case "randompaintp": fun.randompaintp(message, args);break
+    //* Music
+    case "play":
+      case "p": music.play(guildQueue, client.player, message, args)
+      break;
+    case "playlist": music.playlist(guildQueue, client.player, message, args);break
+    case "skip": music.skip(guildQueue, message, args);break
+    case "stop": music.stop(guildQueue, message, args);break
+    case "loop": music.loop(guildQueue, message, args);break
+    case "volume":
+      case "v": music.volume(guildQueue, message, args)
+      break;
+    case "seek": music.seek(guildQueue, message, args);break
+    case "queue": music.queue(guildQueue, message, args);break
+    case "shuffle": music.shuffle(guildQueue, message, args);break
+    case "pause": music.pause(guildQueue, message, args);break
+    case "resume": music.resume(guildQueue, message, args);break
+    case "remove": music.remove(guildQueue, message, args);break
+    case "leave": music.leave(guildQueue, message, args);break
+    default:
+      return message.channel.send(`Select correct command ${message.author}!`)
   }
 })
+
 
 client.login(process.env.CLIENT_TOKEN);
