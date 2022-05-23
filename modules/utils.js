@@ -33,8 +33,8 @@ module.exports = {
     //* modifiers-> 0: full mod(string) 1: sign(string) 2: amount
     let modifiers = [...data[1].matchAll(/(\+|-)+([\d]*)(?!d)/g)]
     //! Start logic
-    let diceAmount = parseInt(roll[2]) ?? 1
-    let diceSize = parseInt(roll[3]) ?? 20
+    let diceAmount = (roll[2]==="")?1:parseInt(roll[2])
+    let diceSize = (roll[3]==="")?20:parseInt(roll[3])
     let action = roll?.[4]
     let actionAmount = parseInt(roll?.[5]) ?? 1
     let modifier = (modifiers.length === 0)? 0: modifiers.map(mod=>mod[0]).reduce((a,b)=>a+b)
@@ -52,17 +52,17 @@ module.exports = {
     //* Keep lower x
     if(action === "kl"){
       if(diceAmount <= actionAmount) return ctx.channel.send("All dice were dropped: 0")
-      for(let j = 0; j < actionAmount; j++){
-        let min = Math.min(result[j])
-        let index = result.findIndex((el)=>el === min)
+      for(let j = 0; j < diceAmount - actionAmount; j++){
+        let max = Math.max(...result)
+        let index = result.findIndex((el)=>el === max)
         droppedNumbers.push(result.splice(index, 1))
       }
     }
     //* Keep highest x
     else if(action === "kh"){
-      for(let j = 0; j < actionAmount; j++){
-        let max = Math.max(result[j])
-        let index = result.findIndex((el)=>el === max)
+      for(let j = 0; j < diceAmount - actionAmount; j++){
+        let min = Math.min(...result)
+        let index = result.findIndex((el)=>el === min)
         droppedNumbers.push(result.splice(index, 1))
       }
     }
@@ -75,7 +75,7 @@ module.exports = {
     //* No action
     if(!(action === "kl" || action === "kh" || action === "r" || action === undefined)) return ctx.channel.send("Incorrect action specified (kl, kh, r)")
     //! Calculations
-    result = result.reduce((a,b)=>a+b)
+    result = (result.length === 1)?result[0]:result.reduce((a,b)=>a+b)
     result += eval(modifier)
     //! Messaging
     droppedNumbers = droppedNumbers.map(el=>`~~${el}~~`)
