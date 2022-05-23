@@ -99,7 +99,10 @@ client.on('messageCreate', async message => {
   const cmd = args[0].slice(prefix.length).toLowerCase()
   let guildQueue = client.player.getQueue(message.guild.id);
 
-  if (cmd === "ping") {
+  if (cmd === "help") {
+    meta.help(message, args)
+  }
+  else if (cmd === "ping") {
     meta.ping(message, args)
   }
   else if (cmd === "posix") {

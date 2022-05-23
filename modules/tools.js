@@ -56,5 +56,13 @@ module.exports = {
       .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
   
     return message.channel.send({ embeds: [embed] })
+  },
+
+  generateList: function (array) {
+    var string = "";
+    for (var i = 0; i < array.length; i++) {
+      string += `\`${array[i]}\` `
+    }
+    return string.trimEnd()
   }
 }

@@ -1,0 +1,6 @@
+version: '2'                                                                                                                                  │dotfiles  MelvinJS
+                                                                                                                                              │~/Projects  cd MelvinJS
+services:                                                                                                                                     │MelvinJS on  main is  v1.0.0 via  v18.2.0  ls
+  melvinjs: 
+    container_name: melvinjs                                                                                                                                  │Dockerfile  images  LICENSE  main.js  modules  node_modules  package.json  README.md  yarn.lock
+    build: .

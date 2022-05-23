@@ -46,6 +46,7 @@ A multipurpose discord bot. More to come later!
 ### Built With
 
 - [Discord.js](https://discord.js.org/)
+- [discord-music-player](https://discord-music-player.js.org)
 - [Crayola™ Crayons](https://www.crayola.com/)
 
 <!-- GETTING STARTED -->
@@ -58,8 +59,8 @@ To get a local copy up and running follow these simple steps.
 
 - A computer
 - Internet connection
-- Docker or Podman
 - Discord Account
+- Docker or Podman
 
 ### Installation
 
@@ -73,11 +74,20 @@ To get a local copy up and running follow these simple steps.
 
 3. Create an `.env` file using the provided template
 
-4. Create and run the container using the provided Dockerfile
+    ```sh
+    cp .env.template .env
+    
+    vim .env
+    ```
 
+4. Create and run the container using the provided Dockerfile
 ## Usage
 
-Soon™
+ - Music
+ - Metar 
+ - Network Tools
+ - QR Code Generation
+ - More Soon™
 
 _For more examples, please refer to the [Documentation](https://github.com/eRgo35/MelvinJS/wiki)_
 
@@ -124,7 +134,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST - Qr code generation)
+START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
