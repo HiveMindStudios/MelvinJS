@@ -26,90 +26,60 @@ module.exports = {
   },
 
   roll: async function (ctx, data) {
+    //? Available actions: kl(Keep lower), kh (Keep highest), r (Minimum roll)
     if (typeof data[1] === 'undefined') data[1] = '2d20kl1+3';
-    const rolls = [...data[1].matchAll(/(\+|-|\/|\*)?([\d]*)d([\d]*)(kh|kl|r)?([\d])*/g)]
+    //* roll-> 0: full roll(string) 1: sign(string) 2: dice amount 3: dice size 4: action(string) 5: action amount
+    const roll = [...data[1].matchAll(/(\+|-|\/|\*)?([\d]*)d([\d]*)(kh|kl|r)?([\d])*/g)][0]
+    //* modifiers-> 0: full mod(string) 1: sign(string) 2: amount
     let modifiers = [...data[1].matchAll(/(\+|-)+([\d]*)(?!d)/g)]
-    let toCalc = []
-    let modSum = 0
-    for (let i = 0; i < modifiers.length; i++) {
-      modSum += modifiers[i][0]
+    //! Start logic
+    let diceAmount = parseInt(roll[2]) ?? 1
+    let diceSize = parseInt(roll[3]) ?? 20
+    let action = roll?.[4]
+    let actionAmount = parseInt(roll?.[5]) ?? 1
+    let modifier = (modifiers.length === 0)? 0: modifiers.map(mod=>mod[0]).reduce((a,b)=>a+b)
+    if(diceAmount < 1){
+      return ctx.channel.send("No dice to roll")
     }
-    toCalc.push(["", modSum, "", ""])
-    for (let i = 0; i < rolls.length; i++) {
-      rolls[i][1] === undefined ? rolls[i][1] = '+' : rolls[i][1]
+    //! Roll numbers
+    let rolledNumbers = []
+    let droppedNumbers = []
+    let result = rolledNumbers
+    for(let i = 0;i < diceAmount ;i++){
+      rolledNumbers.push(Math.floor(Math.random()*diceSize+1))
     }
-    //! Rolling logic
-    try {
-      for (k = 0; k < rolls.length; k++) {
-        if (rolls[k][3] !== "") {
-          //! Keep highest (drop lowest)
-          if (rolls[k][4].toLowerCase() === "kh") {
-            let rolledDice = []
-            let droppedDice = []
-            for (let i = 0; i < rolls[k][2]; i++) {
-              rolledDice.push(randomIntFromInterval(1, rolls[k][3]))
-            }
-            for (let i = 0; i < (rolledDice.length - rolls[k][5]); i++) {
-              droppedDice.push(...rolledDice.splice(rolledDice.indexOf(Math.max(rolledDice)), 1))
-            }
-            toCalc.push([rolls[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, droppedDice])
-          }
-          //! Keep lowest (drop highest)
-          else if (rolls[k][4].toLowerCase() === "kl") {
-            let rolledDice = []
-            let droppedDice = []
-            for (let i = 0; i < rolls[k][2]; i++) {
-              rolledDice.push(randomIntFromInterval(1, rolls[k][3]))
-            }
-            for (let i = 0; i < (rolledDice.length - rolls[k][5]); i++) {
-              droppedDice.push(...rolledDice.splice(rolledDice.indexOf(Math.min(rolledDice)), 1))
-            }
-            toCalc.push([rolls[k][1], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, droppedDice])
-          }
-          //! Minimum roll
-          else if (rolls[k][4].toLowerCase() === "r") {
-            let rolledDice = [];
-            for (let i = 0; i < rolls[k][2]; i++) {
-              rolledDice.push(randomIntFromInterval(rolls[k][5], rolls[k][2]))
-            }
-            toCalc.push([rolls[k][1], rolledDice.reduce((prev, curr) => prev + curr), "", ""])
-          }
-          else {
-            throw "The fuck happened this is unreachable code?"
-          }
-        }
-        else {
-          let rolledDice = []
-          for (let i = 0; i < rolls[0][2]; i++) {
-            rolledDice.push(randomIntFromInterval(1, 20))
-          }
-          toCalc.push(rolls[k][0], rolledDice.reduce((prev, curr) => prev + curr), rolledDice, "")
-        }
-        //! Calculations begin
-        if (toCalc[0][1] == 0) toCalc.splice(0, 1)
-        let message = `Rolling: ${data[1]}`
-        let mess = ""
-        let result = ""
-        for (calculations in toCalc) {
-          result += toCalc[calculations][0].toString() + toCalc[calculations][1].toString()
-          if (toCalc[calculations][2] !== "") {
-            mess += "{"
-            for (let i = 0; i < toCalc[calculations][2].length; i++) {
-              mess += `(${toCalc[calculations][2][i]}) + `
-            }
-            for (let i = 0; i < toCalc[calculations][3].length; i++) {
-              mess += `(~~${toCalc[calculations][3][i]}~~)`
-            }
-            mess += "} + "
-          }
-        }
-        mess.replace(/\) \+ \}/, ")}")
-        return ctx.channel.send(`${mess + modSum}: **${eval(result)}**`)
+    //! Actions
+    //* Keep lower x
+    if(action === "kl"){
+      if(diceAmount <= actionAmount) return ctx.channel.send("All dice were dropped: 0")
+      for(let j = 0; j < actionAmount; j++){
+        let min = Math.min(result[j])
+        let index = result.findIndex((el)=>el === min)
+        droppedNumbers.push(result.splice(index, 1))
       }
     }
-    catch (e) {
-      return ctx.channel.send(e)
+    //* Keep highest x
+    else if(action === "kh"){
+      for(let j = 0; j < actionAmount; j++){
+        let max = Math.max(result[j])
+        let index = result.findIndex((el)=>el === max)
+        droppedNumbers.push(result.splice(index, 1))
+      }
     }
+    //* Reroll below x
+    else if(action === "r"){
+      if(actionAmount > diceSize) return ctx.channel.send("Can't reroll above dice size")
+      result = result.map(x=>(x<actionAmount)?actionAmount:x)
+      rolledNumbers = rolledNumbers.map(x=>(x<actionAmount)?actionAmount:x)
+    }
+    //* No action
+    if(!(action === "kl" || action === "kh" || action === "r" || action === undefined)) return ctx.channel.send("Incorrect action specified (kl, kh, r)")
+    //! Calculations
+    result = result.reduce((a,b)=>a+b)
+    result += eval(modifier)
+    //! Messaging
+    droppedNumbers = droppedNumbers.map(el=>`~~${el}~~`)
+    ctx.channel.send(`Rolling ${roll[0]+modifiers.map(mod=>mod[0]).join("")}: [${rolledNumbers.concat(droppedNumbers).join(", ")}]: **${result}**`)
   },
 
   metar: async function (message, args) {
