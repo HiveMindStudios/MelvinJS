@@ -10,7 +10,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 [![Total lines of code][codelines-shield]][codelines-url]
 [![You did't ask for this][ydaft-shield]][ydaft-url]
 
