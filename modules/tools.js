@@ -1,32 +1,32 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require('discord.js')
 
 module.exports = {
-  randomIntFromInterval: function (min, max) { // min and max included 
+  randomIntFromInterval: function (min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min)
   },
 
   generateError: function (ctx, message) {
-    var error = new MessageEmbed()
-      .setColor("#FF0000")
-      .setTitle("An error occured")
+    const error = new MessageEmbed()
+      .setColor('#FF0000')
+      .setTitle('An error occured')
       .setTimestamp(Date.now)
       .setDescription(message)
-      .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
+      .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
 
-    return ctx.channel.send({ embeds: [error] });
+    return ctx.channel.send({ embeds: [error] })
   },
 
   sleep: function (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms))
   },
 
   format: function (seconds) {
-    var years = Math.floor(seconds / 60 / 60 / 24 / 7 / 52)
-    var weeks = Math.floor(seconds / 60 / 60 / 24 / 7) % 52
-    var days = Math.floor(seconds / 60 / 60 / 24) % 7
-    var hours = Math.floor(seconds / 60 / 60) % 24
-    var minutes = Math.floor(seconds / 60) % 60
-    var seconds = Math.floor(seconds % 60)
+    let years = Math.floor(seconds / 60 / 60 / 24 / 7 / 52)
+    let weeks = Math.floor(seconds / 60 / 60 / 24 / 7) % 52
+    let days = Math.floor(seconds / 60 / 60 / 24) % 7
+    let hours = Math.floor(seconds / 60 / 60) % 24
+    let minutes = Math.floor(seconds / 60) % 60
+    seconds = Math.floor(seconds % 60)
 
     years = (years > 0) ? `${years}y ` : ''
     weeks = (weeks > 0) ? `${weeks}w ` : ''
@@ -39,28 +39,27 @@ module.exports = {
   },
 
   generateEmbed: function (message, title, description, url, duration, image) {
-    var desc;
-    if (typeof duration === "undefined") {
+    let desc
+    if (typeof duration === 'undefined') {
       desc = `[${description}](${url})`
-    }
-    else {
+    } else {
       desc = `[${description}](${url}) \n \`[0:00 / ${duration}]\``
     }
 
-    var embed = new MessageEmbed()
-      .setColor("#" + Math.floor(Math.random() * 16777215).toString(16))
+    const embed = new MessageEmbed()
+      .setColor('#' + Math.floor(Math.random() * 16777215).toString(16))
       .setTitle(title)
       .setThumbnail(image)
       .setDescription(desc)
       .setTimestamp(Date.now)
-      .setFooter("Melvin", "https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp")
-  
+      .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+
     return message.channel.send({ embeds: [embed] })
   },
 
   generateList: function (array) {
-    var string = "";
-    for (var i = 0; i < array.length; i++) {
+    let string = ''
+    for (let i = 0; i < array.length; i++) {
       string += `\`${array[i]}\` `
     }
     return string.trimEnd()

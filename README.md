@@ -75,11 +75,25 @@ To get a local copy up and running follow these simple steps.
 
     ```sh
     cp .env.template .env
-    
+    ```
+
+4. Set all necessary api keys
+     
+    ```sh
     vim .env
     ```
 
-4. Create and run the container using the provided Dockerfile
+5. Create and run the container using the provided Dockerfile
+    
+    ```sh
+    docker run -it .
+    ```
+6. (OPTIONAL) Use docker compose
+
+    ```sh
+    docker compose up -d
+    ```
+  
 ## Usage
 
  - Music
@@ -120,10 +134,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [issues-url]: https://github.com/eRgo35/MelvinJS/issues
 [license-shield]: https://img.shields.io/github/license/eRgo35/MelvinJS.svg?style=for-the-badge
 [license-url]: https://github.com/eRgo35/MelvinJS/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/VectorKappa
-[codestyle-shield]: https://img.shields.io/badge/code%20style-ESLint-4B32C3?style=for-the-badge
-[codestyle-url]: https://eslint.org/
+[codestyle-shield]: https://img.shields.io/badge/code%20style-Standard-f7df1e?style=for-the-badge
+[codestyle-url]: https://standardjs.com/
 [codelines-shield]: https://img.shields.io/tokei/lines/github/eRgo35/MelvinJS?style=for-the-badge
 [codelines-url]: https://www.gitmemory.com/eRgo35/MelvinJS
 [ydaft-shield]: https://img.shields.io/badge/You%20didn't-Ask%20for%20this-lightgrey?style=for-the-badge

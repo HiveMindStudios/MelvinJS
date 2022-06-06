@@ -1,37 +1,36 @@
-const { default: axios } = require("axios");
-const { randomIntFromInterval, generateError } = require("./tools");
+const { default: axios } = require('axios')
+const { randomIntFromInterval, generateError } = require('./tools')
 
 module.exports = {
   op: async function (message, args) {
-    message.channel.send(`${args[1]} was given Administrator rights`);
+    message.channel.send(`${args[1]} was given Administrator rights`)
   },
 
   bless: async function (message, args) {
-    message.channel.send(`${message.author} blessed ${args[1]}. What a good person.`);
+    message.channel.send(`${message.author} blessed ${args[1]}. What a good person.`)
   },
 
   askgod: async function (message, args) {
     message.channel.send([
       "You probably don't want to know.",
-      "Certainly, maybe?",
+      'Certainly, maybe?',
       "I can't predict it right now",
-      "Why should I tell you?",
-    ][Math.floor(Math.random() * (3 - 0) + 0)]);
+      'Why should I tell you?'
+    ][Math.floor(Math.random() * (3 - 0) + 0)])
   },
 
   verse: async function (message, args) {
     args.shift()
-    var verse = args.join(" ");
-    const url_bible = `https://bible-api.com/${verse}`;
-    axios.get(url_bible).then(res => {
+    const verse = args.join(' ')
+    const urlBible = `https://bible-api.com/${verse}`
+    axios.get(urlBible).then(res => {
       if (res.data.text.length < 2000) {
         message.channel.send(res.data.text)
+      } else {
+        message.channel.send('Quote too long')
       }
-      else {
-        message.channel.send("Quote too long")
-      }
-    }).catch(err => {
-      message.channel.send("Not found")
+    }).catch(() => {
+      message.channel.send('Not found')
     })
   },
 
@@ -44,55 +43,51 @@ module.exports = {
   },
 
   yn: async function (message, args) {
-    message.channel.send(["Yes.", "No."][Math.round(Math.random())])
+    message.channel.send(['Yes.', 'No.'][Math.round(Math.random())])
   },
 
   dox: async function (message, args) {
-    if (typeof args[1] === "undefined") args[1] = message.author;
+    if (typeof args[1] === 'undefined') args[1] = message.author
     message.channel.send(`${args[1]}'s IP address is ${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}.${Math.floor(Math.random() * (255 - 1) + 1)}`)
   },
 
   give: async function (message, args) {
-    if (typeof args[1] === "undefined") args[1] = message.author;
-    let user = args[1];
-    args.shift();
-    args.shift();
+    if (typeof args[1] === 'undefined') args[1] = message.author
+    const user = args[1]
+    args.shift()
+    args.shift()
 
-    let amount = args.join(" ").match(/\d/g).join("");
-    let item = args.join(" ").match(/\w\D{1,}/).join("");
+    const amount = args.join(' ').match(/\d/g).join('')
+    const item = args.join(' ').match(/\w\D{1,}/).join('')
 
     message.channel.send(`${message.author} gave ${amount} ${item} to ${user}`)
   },
 
   kit: async function (message, args) {
-    args.shift();
-    let type = args.join(" ");
+    args.shift()
+    const type = args.join(' ')
     message.channel.send(`${message.author} recievied a ${type} kit!`)
   },
 
   uuid: async function (message, args) {
-    if (typeof args[1] === "undefined") {
+    if (typeof args[1] === 'undefined') {
       message.channel.send(`${message.author}'s uuid is ${message.author.id}`)
-    }
-    else {
-      let uuid = args[1].replace('<@!', '').replace('>', '');
+    } else {
+      const uuid = args[1].replace('<@!', '').replace('>', '')
       message.channel.send(`${args[1]}'s uuid is ${uuid}`)
     }
   },
 
   helloworld: async function (message, args) {
-    let secret = Math.floor(Math.random() * (100 - 1) + 1);
+    const secret = Math.floor(Math.random() * (100 - 1) + 1)
     if (secret === 69) {
-      message.channel.send("Shit Happens.")
-    }
-    else if (secret === 37) {
-      message.channel.send("H3110 W0r1D!")
-    }
-    else if (secret === 88) {
-      message.channel.send("Hewwo Wowwd!")
-    }
-    else {
-      message.channel.send("Hello World!")
+      message.channel.send('Shit Happens.')
+    } else if (secret === 37) {
+      message.channel.send('H3110 W0r1D!')
+    } else if (secret === 88) {
+      message.channel.send('Hewwo Wowwd!')
+    } else {
+      message.channel.send('Hello World!')
     }
   },
 
@@ -102,25 +97,25 @@ module.exports = {
       message.channel.send(`Teleported ${args[1]}`)
     }).catch(err => {
       console.log(err)
-      generateError("Invalid Syntax. Please try again!")
+      generateError('Invalid Syntax. Please try again!')
     })
   },
 
   randomtp: async function (message, args) {
     message.guild.channels.fetch().then((channels) => {
-      channels = channels.filter(c => c.type === "GUILD_VOICE");
-      channelIDs = []
-      for (const [channelID, channel] of channels) {
+      channels = channels.filter(c => c.type === 'GUILD_VOICE')
+      const channelIDs = []
+      for (const [channelID] of channels) {
         channelIDs.push(channelID)
       }
-      let random = randomIntFromInterval(0, channelIDs.length - 1)
+      const random = randomIntFromInterval(0, channelIDs.length - 1)
       message.guild.members.fetch(message.mentions.members.first())
         .then((res) => {
           res.voice.setChannel(channelIDs[random])
           message.channel.send(`Abracadabra ${args[1]}`)
         }).catch(err => {
           console.log(err)
-          generateError("Invalid Syntax. Please try again!")
+          generateError('Invalid Syntax. Please try again!')
         })
     })
   },
@@ -131,7 +126,7 @@ module.exports = {
     //   channelIDs = []
     //   for (const [channelID, channel] of channels) {
     //     channelIDs.push(channelID)
-    //     let random = randomIntFromInterval(0, channelIDs.length - 1)  
+    //     let random = randomIntFromInterval(0, channelIDs.length - 1)
 
     //     ctx.guild.members.fetch(ctx.mentions.members.first())
     //       .then((res) => {
@@ -144,43 +139,42 @@ module.exports = {
     //       sleep(3000);
     //   }
     // })
-    message.channel.send("Coming Soon!");
+    message.channel.send('Coming Soon!')
   },
 
   randomtpall: async function (message, args) {
     message.guild.channels.fetch().then((channels) => {
-      channels = channels.filter(c => c.type === "GUILD_VOICE");
-      channelIDs = []
+      channels = channels.filter(c => c.type === 'GUILD_VOICE')
+      const channelIDs = []
       for (const [channelID, channel] of channels) {
         channelIDs.push(channelID)
-        for (const [memberID, member] of channel.members) {
+        for (const [member] of channel.members) {
           member.voice.setChannel(channelIDs[randomIntFromInterval(0, channelIDs.length - 1)])
         }
       }
-      message.channel.send(`Get out of 'ere`);
-    }).catch((err) => {
-      generateError("Invalid Syntax. Please try again!")
+      message.channel.send("Get out of 'ere")
+    }).catch(() => {
+      generateError('Invalid Syntax. Please try again!')
     })
   },
 
   yeet: async function (message, args) {
-    if (typeof args[1] === "undefined") {
+    if (typeof args[1] === 'undefined') {
       message.guild.members.fetch(message.author.id).then((res) => {
         res.voice.setChannel(null)
         message.channel.send(`Yeeted ${message.author}`)
       }).catch(err => {
         console.log(err)
-        generateError("Invalid Syntax. Please try again!")
+        generateError('Invalid Syntax. Please try again!')
       })
-    }
-    else {
+    } else {
       message.guild.members.fetch(message.mentions.members.first())
         .then((res) => {
           res.voice.setChannel(null)
           message.channel.send(`Yeeted ${args[1]}`)
         }).catch(err => {
-          console.log(err);
-          generateError("Invalid Syntax. Please try again!")
+          console.log(err)
+          generateError('Invalid Syntax. Please try again!')
         })
     }
   }
