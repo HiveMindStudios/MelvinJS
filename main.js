@@ -101,7 +101,7 @@ client.on('messageCreate', async message => {
   const guildQueue = client.player.getQueue(message.guild.id)
   switch (cmd) {
     //* Meta
-    case 'help': meta.help(message, args); break
+    case 'help': meta.help({ network, utils, fun, meta, music }, message, args); break
     case 'ping': meta.ping(message, args); break
     case 'posix': meta.posix(message, args); break
     case 'uptime': meta.uptime(message, args); break
@@ -146,7 +146,8 @@ client.on('messageCreate', async message => {
     case 'pause': music.pause(guildQueue, message, args); break
     case 'resume': music.resume(guildQueue, message, args); break
     case 'remove': music.remove(guildQueue, message, args); break
-    case 'leave': music.leave(guildQueue, message, args); break
+    case 'join': music.join(guildQueue, client.player, message, args); break
+    case 'leave': music.leave(guildQueue, client.player, message, args); break
     default:
       return message.channel.send(`Select correct command ${message.author}!`)
   }

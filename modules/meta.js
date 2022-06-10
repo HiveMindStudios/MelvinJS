@@ -1,27 +1,39 @@
 const { MessageEmbed } = require('discord.js')
-const { format, generateList } = require('./tools')
+const { format, generateList, generateError } = require('./tools')
+const documentation = require('../documentation.json')
 
 module.exports = {
-  help: async function (message, args) {
-    // TODO Rewrite it so the bot shows the new commands automatically as they appear in main.js
-    const meta = ['help', 'ping', 'posix', 'uptime']
-    const utils = ['qr', 'roll', 'metar', 'taf', 'dice']
-    const network = ['ip']
-    const fun = ['op', 'bless', 'askgod', 'verse', 'kill', 'infect', 'yn', 'dox', 'give', 'kit', 'uuid', 'tp', 'helloworld', 'randomtp', 'randomtpall', 'yeet', 'randompaintp']
-    const music = ['play', 'playlist', 'skip', 'stop', 'loop', 'volume', 'seek', 'queue', 'shuffle', 'pause', 'resume', 'remove', 'leave']
-
-    const help = new MessageEmbed()
-      .setColor('#' + Math.floor(Math.random() * 16777215).toString(16))
-      .setTitle('Available Commands')
-      // TODO add syntax to every command .setDescription("Use `help <command>` to get help on the specific command")
-      .setTimestamp(Date.now)
-      .addField('Meta', generateList(meta), false)
-      .addField('Utils', generateList(utils), false)
-      .addField('Network', generateList(network), false)
-      .addField('Fun', generateList(fun), false)
-      .addField('Music', generateList(music), false)
-    help.setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
-    return message.channel.send({ embeds: [help] })
+  help: async function ({ network, utils, fun, meta, music }, message, args) {
+    args.shift()
+    if (args.join('').trim().replace(/\s/, '').length === 0) {
+      const help = new MessageEmbed()
+        .setColor('#' + Math.floor(Math.random() * 16777215).toString(16))
+        .setTitle('Available Commands')
+        .setDescription('Type $help <command> to show info about a specific command')
+        .setTimestamp(Date.now)
+        .addField('Meta', generateList(Object.keys(meta)), false)
+        .addField('Utils', generateList(Object.keys(utils)), false)
+        .addField('Network', generateList(Object.keys(network)), false)
+        .addField('Fun', generateList(Object.keys(fun)), false)
+        .addField('Music', generateList(Object.keys(music)), false)
+      help.setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
+      return message.channel.send({ embeds: [help] })
+    } else {
+      let cmd = ''
+      try {
+        cmd = documentation[Object.keys(documentation).filter(key => key === args.join(' ').toLowerCase()).toString()]
+        const helpSyntax = new MessageEmbed()
+          .setColor('#' + Math.floor(Math.random() * 16777215).toString(16))
+          .setTitle(`$${args.join(' ').toLowerCase()} command`)
+          .setDescription(cmd.description)
+          .addField('Usage', `\`${cmd.syntax}\``, false)
+          .setTimestamp(Date.now)
+        helpSyntax.setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
+        return message.channel.send({ embeds: [helpSyntax] })
+      } catch (err) {
+        generateError(message, 'Unknown command! Type $help for a list of commands.')
+      }
+    }
   },
 
   ping: async function (message, args) {

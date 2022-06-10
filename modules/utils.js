@@ -15,7 +15,7 @@ module.exports = {
         .setURL(`http://api.qrserver.com/v1/create-qr-code/?data=${args}&size=1000x1000&ecc=Q&margin=8`)
         .setTimestamp(Date.now)
         .setImage(`http://api.qrserver.com/v1/create-qr-code/?data=${args}&size=256x256&ecc=Q&margin=8`)
-        .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
+        .setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
       return message.channel.send({ embeds: [qrCode] })
     }
   },
@@ -118,7 +118,7 @@ module.exports = {
           weather.addField('Elevation:', res.data.info.elevation_m + 'm', false)
         }
       }
-      weather.setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
+      weather.setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
       return message.channel.send({ embeds: [weather] })
     }).catch(err => {
       // if response isn't empty show server's response
@@ -148,7 +148,7 @@ module.exports = {
         .setTimestamp(Date.now)
         .addField('Airport Name:', res.data.info.name, false)
         .addField('Forecast:', res.data.raw, false)
-        .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
+        .setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
       return message.channel.send({ embeds: [weather] })
     }).catch(err => {
       // if response isn't empty show server's response

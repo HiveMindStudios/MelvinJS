@@ -153,8 +153,21 @@ module.exports = {
       generateError(message, 'There is no track to remove!')
     }
   },
-  leave: async function (guildQueue, message, args) {
+
+  join: async function (guildQueue, player, message, args) {
     try {
+      const queue = player.createQueue(message.guild.id)
+      await queue.join(message.member.voice.channel)
+      generateEmbed(message, 'Joined the voice channel', 'Hello there, add some music with $play!')
+    } catch (err) {
+      generateError(message, "Something went wrong. We're working on it.")
+    }
+  },
+
+  leave: async function (guildQueue, player, message, args) {
+    try {
+      const queue = player.createQueue(message.guild.id)
+      queue.stop()
       guildQueue.leave()
       generateEmbed(message, 'Stopped', 'Stopped music playback and left the voice channel')
     } catch (err) {
