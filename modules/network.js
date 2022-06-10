@@ -15,7 +15,7 @@ module.exports = {
         .addField('Timezone:', res.data.timezone, false)
         .addField('Organization:', res.data.org, false)
         .addField('ISP:', res.data.isp, false)
-        .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+        .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
 
       return message.channel.send({ embeds: [ipInfo] })
     }).catch(err => {

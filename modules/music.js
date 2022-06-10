@@ -153,10 +153,12 @@ module.exports = {
       generateError(message, 'There is no track to remove!')
     }
   },
-  // TODO Implement proper leave function
-  leave: async function (guildQueue, message) {
-    console.log(guildQueue)
-    guildQueue.stop()
-    generateEmbed(message, 'Stopped', 'Stopped music playback and left the voice channel')
+  leave: async function (guildQueue, message, args) {
+    try {
+      guildQueue.leave()
+      generateEmbed(message, 'Stopped', 'Stopped music playback and left the voice channel')
+    } catch (err) {
+      generateError(message, 'There is no track to stop!')
+    }
   }
 }

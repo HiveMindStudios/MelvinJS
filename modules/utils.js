@@ -15,7 +15,7 @@ module.exports = {
         .setURL(`http://api.qrserver.com/v1/create-qr-code/?data=${args}&size=1000x1000&ecc=Q&margin=8`)
         .setTimestamp(Date.now)
         .setImage(`http://api.qrserver.com/v1/create-qr-code/?data=${args}&size=256x256&ecc=Q&margin=8`)
-        .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+        .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
       return message.channel.send({ embeds: [qrCode] })
     }
   },
@@ -81,17 +81,16 @@ module.exports = {
 
   metar: async function (message, args) {
     const params = args.join(' ').slice(6).toUpperCase() // get all params in a nice string
-
+    // reg exps
+    const regExp = [
+      /[A-Z]{3,4}/,
+      /-V/,
+      /M|FT/
+    ]
     // assign different args to vars
-    let ICAO = params.match(/[A-Z]{3,4}/)
-    let Verbosity = params.match(/-V/)
-    let Units = params.match(/M|FT/)
-
-    // set defaults
-    if (ICAO == null) ICAO = 'KJFK'
-    if (Verbosity == null) Verbosity = ''
-    if (Units == null) Units = 'M'
-
+    const ICAO = regExp[0].test(params) ? params.match(regExp[0])[0] : 'KJFK'
+    const Verbosity = regExp[1].test(params) ? params.match(regExp[1])[0] : ''
+    const Units = regExp[2].test(params) ? params.match(regExp[2])[0] : 'M'
     // prepare request
     const url = `https://avwx.rest/api/metar/${ICAO}?options=info,summary&airport=true&reporting=true&format=json&onfail=cache`
     axios.get(url, {
@@ -119,7 +118,7 @@ module.exports = {
           weather.addField('Elevation:', res.data.info.elevation_m + 'm', false)
         }
       }
-      weather.setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+      weather.setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
       return message.channel.send({ embeds: [weather] })
     }).catch(err => {
       // if response isn't empty show server's response
@@ -133,13 +132,8 @@ module.exports = {
 
   taf: function (message, args) {
     const params = args.join(' ').slice(4).toUpperCase() // get all params in a nice string
-
     // assign different args to vars
-    let ICAO = params.match(/[A-Z]{3,4}/)
-
-    // set defaults
-    if (ICAO == null) ICAO = 'KJFK'
-
+    const ICAO = /[A-Z]{3,4}/.test(params) ? params.match(/[A-Z]{3,4}/)[0] : 'KJFK'
     // prepare request
     const url = `https://avwx.rest/api/taf/${ICAO}?options=info,summary&airport=true&reporting=true&format=json&onfail=cache`
     axios.get(url, {
@@ -154,7 +148,7 @@ module.exports = {
         .setTimestamp(Date.now)
         .addField('Airport Name:', res.data.info.name, false)
         .addField('Forecast:', res.data.raw, false)
-        .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+        .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
       return message.channel.send({ embeds: [weather] })
     }).catch(err => {
       // if response isn't empty show server's response

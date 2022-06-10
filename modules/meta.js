@@ -20,7 +20,7 @@ module.exports = {
       .addField('Network', generateList(network), false)
       .addField('Fun', generateList(fun), false)
       .addField('Music', generateList(music), false)
-    help.setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+    help.setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
     return message.channel.send({ embeds: [help] })
   },
 

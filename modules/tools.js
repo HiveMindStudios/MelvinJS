@@ -11,7 +11,7 @@ module.exports = {
       .setTitle('An error occured')
       .setTimestamp(Date.now)
       .setDescription(message)
-      .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+      .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
 
     return ctx.channel.send({ embeds: [error] })
   },
@@ -52,7 +52,7 @@ module.exports = {
       .setThumbnail(image)
       .setDescription(desc)
       .setTimestamp(Date.now)
-      .setFooter('Melvin', 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp')
+      .setFooter({ text: 'Melvin', icon: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
 
     return message.channel.send({ embeds: [embed] })
   },
