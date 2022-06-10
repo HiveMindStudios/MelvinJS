@@ -26,7 +26,7 @@ module.exports = {
           .setColor('#' + Math.floor(Math.random() * 16777215).toString(16))
           .setTitle(`$${args.join(' ').toLowerCase()} command`)
           .setDescription(cmd.description)
-          .addField('Usage', `\`${cmd.syntax}\``, false)
+          .addField('Usage', `\`$${cmd.syntax}\``, false)
           .setTimestamp(Date.now)
         helpSyntax.setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
         return message.channel.send({ embeds: [helpSyntax] })
