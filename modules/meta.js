@@ -31,7 +31,7 @@ module.exports = {
         helpSyntax.setFooter({ text: 'Melvin', iconURL: 'https://cdn.discordapp.com/avatars/909848404291645520/f1617585331735015c8c800d21e56362.webp' })
         return message.channel.send({ embeds: [helpSyntax] })
       } catch (err) {
-        generateError(message, 'Unknown command! Type $help for a list of commands.')
+        generateError(message, "Unknown command (or documentation doesn't exist yet)! Type $help for a list of commands.")
       }
     }
   },

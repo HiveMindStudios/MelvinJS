@@ -97,8 +97,29 @@ module.exports = {
       message.channel.send(`Teleported ${args[1]}`)
     }).catch(err => {
       console.log(err)
-      generateError('Invalid Syntax. Please try again!')
+      generateError(message, 'Invalid Syntax. Please try again!')
     })
+  },
+
+  tpall: async function (message, args) {
+    // message.guild.channels.fetch().then((channels) => {
+    //   channels = channels.filter(c => c.type === 'GUILD_VOICE')
+    //   const channelIDs = []
+    //   for (const [channelID, channel] of channels) {
+    //     channelIDs.push(channelID)
+    //     for (const [member] of channel.members) {
+    //       member.voice.setChannel('')
+    //     }
+    //   }
+    //   message.channel.send("Get out of 'ere")
+    // }).catch(() => {
+    //   generateError(message, 'Invalid Syntax. Please try again!')
+    // })
+    message.channel.send('Coming Soon!')
+  },
+
+  tphere: async function (message, args) {
+    message.channel.send('Coming Soon!')
   },
 
   randomtp: async function (message, args) {
@@ -115,7 +136,7 @@ module.exports = {
           message.channel.send(`Abracadabra ${args[1]}`)
         }).catch(err => {
           console.log(err)
-          generateError('Invalid Syntax. Please try again!')
+          generateError(message, 'Invalid Syntax. Please try again!')
         })
     })
   },
@@ -154,7 +175,7 @@ module.exports = {
       }
       message.channel.send("Get out of 'ere")
     }).catch(() => {
-      generateError('Invalid Syntax. Please try again!')
+      generateError(message, 'Invalid Syntax. Please try again!')
     })
   },
 
@@ -165,7 +186,7 @@ module.exports = {
         message.channel.send(`Yeeted ${message.author}`)
       }).catch(err => {
         console.log(err)
-        generateError('Invalid Syntax. Please try again!')
+        generateError(message, 'Invalid Syntax. Please try again!')
       })
     } else {
       message.guild.members.fetch(message.mentions.members.first())
@@ -174,7 +195,7 @@ module.exports = {
           message.channel.send(`Yeeted ${args[1]}`)
         }).catch(err => {
           console.log(err)
-          generateError('Invalid Syntax. Please try again!')
+          generateError(message, 'Invalid Syntax. Please try again!')
         })
     }
   }

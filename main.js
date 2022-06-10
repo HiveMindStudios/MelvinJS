@@ -126,6 +126,8 @@ client.on('messageCreate', async message => {
     case 'kit': fun.kit(message, args); break
     case 'uuid': fun.uuid(message, args); break
     case 'tp': fun.tp(message, args); break
+    case 'tpall': fun.tpall(message, args); break
+    case 'tphere': fun.tphere(message, args); break
     case 'helloworld': fun.helloworld(message, args); break
     case 'randomtp': fun.randomtp(message, args); break
     case 'randomtpall': fun.randomtpall(message, args); break

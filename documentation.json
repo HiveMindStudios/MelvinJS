@@ -24,6 +24,8 @@
   "kit": {"description": "", "syntax": ""},
   "uuid": {"description": "", "syntax": ""},
   "tp": {"description": "", "syntax": ""},
+  "tpall": {"description": "", "syntax": ""},
+  "tphere": {"description": "", "syntax": ""},
   "helloworld": {"description": "", "syntax": ""},
   "randomtp": {"description": "", "syntax": ""},
   "randomtpall": {"description": "", "syntax": ""},
